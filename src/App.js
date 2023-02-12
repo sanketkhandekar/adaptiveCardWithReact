@@ -21,14 +21,10 @@ const AdaptiveCard = () => {
       actions: [
         {
           type: 'Action.OpenUrl',
-          title: 'Learn more',
+          title: 'Click Me',
           url: 'http://adaptivecards.io'
-        },
-        {
-          type: 'Action.OpenUrl',
-          title: 'GitHub',
-          url: 'http://github.com/Microsoft/AdaptiveCards'
         }
+      
       ]
     };
   
@@ -55,8 +51,9 @@ const AdaptiveCard = () => {
   
     adaptiveCard.parse(card);
   
-    const renderedCard = adaptiveCard.render();
-    document.body.appendChild(renderedCard);
+    const cardContainer = document.getElementById("cardContainer");
+    cardContainer.innerHTML = '';
+    cardContainer.appendChild(adaptiveCard.render());
   }, [data]);
   
   return (
