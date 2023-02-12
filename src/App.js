@@ -1,25 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import * as AdaptiveCards from 'adaptivecards';
 
-function App() {
+const AdaptiveCard = () => {
+  const [data, setData] = useState('');
+
+  useEffect(() => {
+    const card = {
+      type: 'AdaptiveCard',
+      version: '1.0',
+      body: [
+        {
+          type: 'Image',
+          url: 'http://adaptivecards.io/content/adaptive-card-50.png'
+        },
+        {
+          type: 'TextBlock',
+          text: data
+        }
+      ],
+      actions: [
+        {
+          type: 'Action.OpenUrl',
+          title: 'Learn more',
+          url: 'http://adaptivecards.io'
+        },
+        {
+          type: 'Action.OpenUrl',
+          title: 'GitHub',
+          url: 'http://github.com/Microsoft/AdaptiveCards'
+        }
+      ]
+    };
+  
+    const adaptiveCard = new AdaptiveCards.AdaptiveCard();
+    adaptiveCard.hostConfig = new AdaptiveCards.HostConfig({
+      fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
+    });
+  
+    adaptiveCard.onExecuteAction = async function(action) {
+      console.log(`Called service: `);
+      const url = 'http://localhost:8080/newtest';
+  
+      try {
+        const response = await fetch(url);
+        const jsonData = await response.json();
+        console.log(`Service response: ${jsonData}`);
+        setData(JSON.stringify(jsonData));
+      } catch (error) {
+        console.error(`Error calling service: ${error}`);
+      }
+  
+      console.log(`Called service: `);
+    };
+  
+    adaptiveCard.parse(card);
+  
+    const renderedCard = adaptiveCard.render();
+    document.body.appendChild(renderedCard);
+  }, [data]);
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div id="cardContainer" />
   );
-}
+};
 
-export default App;
+export default AdaptiveCard;
